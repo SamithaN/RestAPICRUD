@@ -2,11 +2,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RestApiCRUD.Interface;
+using RestApiCRUD.Models;
 using RestApiCRUD.Services;
 using System;
 using System.Collections.Generic;
@@ -28,7 +30,9 @@ namespace RestApiCRUD
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSingleton<IEmployeeData, EmployeeService>();
+            services.AddDbContextPool<EmployeeContext>(options => options.UseSqlServer(Configuration.
+                GetConnectionString("EmployeeContextConnectionString")));
+            services.AddScoped<IEmployeeData, SqlEmployeeData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
